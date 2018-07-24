@@ -24,83 +24,83 @@ public class DAOImpl3 implements DAO {
 
     public DAOImpl3() {
         cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
-        try{
+        try {
             session = cluster.connect(KEYSPACE_NAME);
-        }catch(Exception ex){
-            //ex.printStackTrace();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
     @Override
     public void create(User user) {
         //try (Session session = cluster.connect(KEYSPACE_NAME)) {
-            String cql = String.format("INSERT INTO users(login, content, role) VALUES('%s','%s','%s')", user.getLogin(), user.getContent(), user.getRole());
-            session.execute(cql);
+        String cql = String.format("INSERT INTO users(login, content, role) VALUES('%s','%s','%s')", user.getLogin(), user.getContent(), user.getRole());
+        session.execute(cql);
         //}
     }
 
     @Override
     public List<User> findAll() {
-       // try (Session session = cluster.connect(KEYSPACE_NAME)) {
-            ResultSet rs = session.execute("SELECT * FROM users");
-            List<User> users = new ArrayList<>();
-            for (Row row : rs) {
-                String login = row.getString("login");
-                String content = row.getString("content");
-                String role = row.getString("role");
-                User user = new User();
-                user.setContent(content);
-                user.setLogin(login);
-                user.setRole(role);
-                users.add(user);
-            }
-            return users;
-       // }
+        // try (Session session = cluster.connect(KEYSPACE_NAME)) {
+        ResultSet rs = session.execute("SELECT * FROM users");
+        List<User> users = new ArrayList<>();
+        for (Row row : rs) {
+            String login = row.getString("login");
+            String content = row.getString("content");
+            String role = row.getString("role");
+            User user = new User();
+            user.setContent(content);
+            user.setLogin(login);
+            user.setRole(role);
+            users.add(user);
+        }
+        return users;
+        // }
     }
 
     @Override
     public User find(String login) {
-       // try (Session session = cluster.connect(KEYSPACE_NAME)) {
-            ResultSet rs = session.execute("SELECT * FROM users");
-            for (Row row : rs) {
-                String content = row.getString("content");
-                String role = row.getString("role");
-                User user = new User();
-                user.setContent(content);
-                user.setLogin(login);
-                user.setRole(role);
-                return user;
-            }
-            return null;
-      //  }
+        // try (Session session = cluster.connect(KEYSPACE_NAME)) {
+        ResultSet rs = session.execute("SELECT * FROM users");
+        for (Row row : rs) {
+            String content = row.getString("content");
+            String role = row.getString("role");
+            User user = new User();
+            user.setContent(content);
+            user.setLogin(login);
+            user.setRole(role);
+            return user;
+        }
+        return null;
+        //  }
     }
 
     @Override
     public long count() {
-       // try (Session session = cluster.connect(KEYSPACE_NAME)) {
-            ResultSet rs = session.execute("SELECT count(*) FROM users");
-            for (Row row : rs) {
-                return row.getLong(0);
-            }
-            return 0;
-      //  }
+        // try (Session session = cluster.connect(KEYSPACE_NAME)) {
+        ResultSet rs = session.execute("SELECT count(*) FROM users");
+        for (Row row : rs) {
+            return row.getLong(0);
+        }
+        return 0;
+        //  }
     }
 
     @Override
     public User update(String login, User candidateUser) {
-     //   try (Session session = cluster.connect(KEYSPACE_NAME)) {
-            String cql = String.format("UPDATE users SET content='%s', role='%s' WHERE login='%s'", candidateUser.getContent(), candidateUser.getRole(), login);
-            session.execute(cql);
-    //    }
+        //   try (Session session = cluster.connect(KEYSPACE_NAME)) {
+        String cql = String.format("UPDATE users SET content='%s', role='%s' WHERE login='%s'", candidateUser.getContent(), candidateUser.getRole(), login);
+        session.execute(cql);
+        //    }
         return candidateUser;
     }
 
     @Override
     public void remove(String login) {
-      //  try (Session session = cluster.connect(KEYSPACE_NAME)) {
-            String cql = String.format("DELETE FROM users WHERE login='%s'", login);
-            session.execute(cql);
-       // }
+        //  try (Session session = cluster.connect(KEYSPACE_NAME)) {
+        String cql = String.format("DELETE FROM users WHERE login='%s'", login);
+        session.execute(cql);
+        // }
     }
 
     @Override
@@ -109,36 +109,36 @@ public class DAOImpl3 implements DAO {
             String cql = "CREATE KEYSPACE IF NOT EXISTS  my_keyspace WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1  }";
             session.execute(cql);
         }
-        if(session==null){
+        if (session == null) {
             session = cluster.connect(KEYSPACE_NAME);
         }
     }
 
     @Override
     public void dropSchema() {
-       try (Session session = cluster.connect()) {
+        try (Session session = cluster.connect()) {
             String cql = "DROP KEYSPACE IF EXISTS my_keyspace";
             session.execute(cql);
-       }
-       session.close();
-       cluster.close();
+        }
+        session.close();
+        cluster.close();
     }
 
     @Override
     public void createTable() {
-      // try (Session session = cluster.connect(KEYSPACE_NAME)) {
-            String cql = "CREATE TABLE IF NOT EXISTS users(login text, content text, role text,  PRIMARY KEY (login))";
-            session.execute(cql);
-     //   }
+        // try (Session session = cluster.connect(KEYSPACE_NAME)) {
+        String cql = "CREATE TABLE IF NOT EXISTS users(login text, content text, role text,  PRIMARY KEY (login))";
+        session.execute(cql);
+        //   }
     }
 
     @Override
     public void dropTable() {
-       // try (Session session = cluster.connect(KEYSPACE_NAME)) {
-            String cql = "DROP TABLE IF EXISTS users";
-            session.execute(cql);
-      //  }
-        
+        // try (Session session = cluster.connect(KEYSPACE_NAME)) {
+        String cql = "DROP TABLE IF EXISTS users";
+        session.execute(cql);
+        //  }
+
     }
 
 }
