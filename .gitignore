@@ -1,3 +1,5 @@
 target/
 /cassandra-client-app/target/
 /collection-binding-cassandra/target/
+/cassandra-embedded-testing/.idea
+/cassandra-embedded-testing/*.toDelete
